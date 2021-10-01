@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<style>
+
+div {
+  border: 2px solid;
+  padding: 0px; 
+  width: 800px;
+  height: 800px;
+  resize: both;
+  overflow: auto;
+  background-color: black;
+}</style>
+
+	<head>
+	<script type="text/javascript"> 
+
+	var circleNumber=0;
+	var	icount=0.0;
+        var     intervalIds=[];
+var     c={};
+	var c=[];
+        var going = false;
+        var w;
+        var old_w;
+        var h;
+        var old_h;
+
+class Circle {
+
+	constructor(cx, cy, r, fill, vx, vy, text){
+            this._cElem = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+            this._svg = document.getElementById("idSVG");
+	    this._oid = new String("circ")+(circleNumber++);
+	    this._cx = cx;
+	    this._cy = cy;
+	    this._r = r;
+	    this._fill = fill;
+	    this._vx = vx;
+	    this._vy = vy;
+	    this._text = text;
+	
+               this._cElem.setAttribute("cx", this._cx);
+               this._cElem.setAttribute("cy", this._cy);
+               this._cElem.setAttribute("fill", this._fill);
+               this._cElem.setAttribute("r", this._r);
+	       this._cElem.setAttribute("id", this._oid);
+               //var cText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+               //var cTextContent = document.createTextNode( "this is some text");
+               //cText.setAttribute("x", this.cx);
+               //cText.setAttribute("y", this.cy);
+               //cText.setAttribute("text-anchor", "middle");
+               //cText.setAttribute("stroke-width", "2px");
+               //cText.appendChild(this.cTextContent);
+               this._svg.appendChild(this._cElem);       
+               //svg.appendChild(this.cText);
+           }
+
+	   check_reflect(){
+		   w = document.getElementById("main_div").offsetWidth;
+                   h = document.getElementById("main_div").offsetHeight;
+		   if (this._cx > w-this._r) {
+			   this._cx = 2*w-2.0*this._r - this._cx;
+			   this._vx = -this._vx - (.1*w-.1*old_w);
+		   }
+		   if (this._cx < this._r) {
+			   this._cx = 2.0*this._r - this._cx;
+			   this._vx = -this._vx;
+		   }
+		   if (this._cy > h-this._r) {
+			   this._cy = 2*h - 2.0*this._r - this._cy;
+			   this._vy = -this._vy - (.1*h-.1*old_h);
+		   }
+		   if (this._cy < this._r) {
+			   this._cy = 2.0 * this._r -this._cy;
+			   this._vy = -this._vy;
+		   }
+		   if (this._oid=="circ0") {
+		   old_w = w;
+		   old_h = h;
+		   }
+	   }
+
+           f (oid) {
+			this._vy = this._vy +.001; // gravity
+			this.check_reflect();
+			this._cx = this._cx + this._vx;
+			this._cy = this._cy + this._vy;
+		      document.getElementById(oid).setAttribute("cx", this._cx);
+		      document.getElementById(oid).setAttribute("cy", this._cy); 
+		   }
+	   move(){
+		   intervalIds.push(  setInterval(f=>{this.f(this._oid)}
+			   , 1));
+	   }
+    }
+
+     function go(){
+
+	           console.log ("h=", h, ", ", "w=", w);
+	for(var i=0; i<c.length; i++)
+		c[i].move();
+     }
+     function stop(){
+	for(var i=0; i<intervalIds.length; i++)
+			clearInterval(intervalIds[i])
+         }
+	 window.onload = (event) => {
+         
+		 
+	 for (var n=0; n<250 ;n++)
+	 {
+            var randomColor1 = Math.floor(Math.random()*16777215+2222222).toString(16); 
+            c.push(  new Circle(Math.random()*800, Math.random()*800, 5*Math.random()+5, "#"+randomColor1, 2*Math.random()-1 ,2*Math.random()-1));
+            //c.push(  new Circle(Math.random()*800, Math.random()*800, 5*Math.random()+5, "#"+randomColor1, 0,0));
+            // c.push( new Circle( 50,50, 10, "#"+randomColor1, Math.floor(10*Math.random()-5) ,Math.floor(10*Math.random())-5));
+            
+         }
+         const useEventType = (typeof window.PointerEvent === 'function') ? 'pointer' : 'mouse';
+         const listeners = ['click'];
+
+         const pointerHandler = (event) => {
+
+		 if (going) stop();
+		 else go();
+			 going = !going;
+	 } 
+         listeners.map((etype) => {
+		 document.getElementById("idSVG").addEventListener(etype, pointerHandler);
+         });
+
+         };
+
+
+	</script>
+
+	</head>
+<body>
+
+<div  id="main_div">
+<svg id="idSVG" width="100%" height="100%" >
+   <!--circle id="crcl" cx="150" cy="200" r="5" stroke="green" stroke-width="4" fill="yellow" /-->
+   Sorry, your browser does not support inline SVG.
+</svg> 
+</div>
+<!--button onclick="go();">move!</button--> 
+</body>
+</html>
